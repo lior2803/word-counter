@@ -11,4 +11,4 @@ The project is comprised of one component, a backend server based on node.js.
 * request
 
 #### Endpoints
-*Word-Counter*
+**Word-Counter**
