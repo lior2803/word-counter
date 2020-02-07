@@ -12,38 +12,41 @@ app.post('/words/count', (req, res) => {
     let input = req.body.input;
     let type = req.body.type;
 
-    let handleResponse = (err) => {
-        if (err){
-            res.status(500).send("Error message: " + err);
-        } else {
-            res.sendStatus(200);
-        }
-    };
-
-    switch(type.toLowerCase()) {
-      case "file":
-        wordCounter.countWordsInFile(input, handleResponse);
-        break;
-      case "url":
-        wordCounter.countWordsInURL(input, handleResponse);
-        break;
-      case "string":
-        wordCounter.countWordsInString(str);
+    let onSuccess = () => {
         res.sendStatus(200);
-        break;
-      default:
-        res.status(400).send({error: "Unsupported type of input: " + type});
+    };
+    try {
+        switch(type.toLowerCase()) {
+          case "file":
+            wordCounter.countWordsInFile(input, onSuccess);
+            break;
+          case "url":
+            wordCounter.countWordsInURL(input, onSuccess);
+            break;
+          case "string":
+            wordCounter.countWordsInString(input);
+            res.sendStatus(200);
+            break;
+          default:
+            res.status(400).send({error: "Unsupported type of input: " + type});
+        }
+    } catch(err) {
+        res.status(500).send("Error message: " + err);
     }
 });
 
 app.get('/words/stats/:word', (req, res) => {
-    let response = {};
+    try {
+        let response = {};
 
-    let word = req.params.word.toLowerCase();
-    let count = wordCounter.getStats(word);
-    response[word] = count;
+        let word = req.params.word.toLowerCase();
+        let count = wordCounter.getStats(word);
+        response[word] = count;
 
-    res.status(200).send(response);
+        res.status(200).send(response);
+    } catch(err) {
+        res.status(500).send("Error message: " + err);
+    }
 });
 
 app.listen(3000, () => {

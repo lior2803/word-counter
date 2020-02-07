@@ -17,15 +17,9 @@ const countWordsInString = (str) => {
 
 const countWordsInFile = (path, callback) => {
     fs.createReadStream(path)
-    .on('error', function(err) {
-        callback(err);
-    })
     .pipe(eventStream.split())
     .pipe(eventStream.mapSync(function(line) {
            countWordsInString(line);
-        })
-        .on('error', function(err) {
-            callback(err);
         })
         .on('end', function() {
             callback();
@@ -36,9 +30,6 @@ const countWordsInFile = (path, callback) => {
 const countWordsInURL = (url, callback) => {
     let path = 'fromURL.txt';
     let ws = request.get(url)
-    .on('error', function(err) {
-        callback(err);
-    })
     .pipe(fs.createWriteStream(path));
     ws.on('finish', function(){
           countWordsInFile(path, callback);
