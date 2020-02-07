@@ -52,7 +52,7 @@ Receives a word and returns the number of times the word appeared so far (in all
 
 * Method: GET
 * Path: http://localhost:3000/words/stats/[WORD]
-* Path parameter: the word 
+* Path parameter: The word 
 * Response:
     - 200 OK - A JSON with the number of appearances (in case the word doesn't appear 0 will be returned)
         ```json
