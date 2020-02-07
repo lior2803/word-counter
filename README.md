@@ -12,7 +12,7 @@ The project is comprised of one component, a backend server based on node.js.
 
 ## Endpoints
 #### Word-Counter
-Receives an input and a type of input and counts the number of appearances for each word in the input.  
+Receives an input and a type of an input and counts the number of appearances for each word in the input.  
 The input should be a valid string / path to file / URL to file.  
 The words count is case insensitive and dashes, numbers and commas are part of the word.  
 The words are seperated by EOL, tab and spaces.
