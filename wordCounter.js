@@ -4,9 +4,14 @@ const request = require('request');
 
 let wordCounts = {};
 
+const removeInvalidChars = (str) => {
+    return str.replace(/[.\/#!$%\^&\*;:{}=_`~()0-9]/g,"");
+}
+
 const countWordsInString = (str) => {
     let wordsArr = str.toLowerCase().trim().split(/\s+/);
     wordsArr.forEach((word) => {
+        word = removeInvalidChars(word);
         if (!wordCounts[word]) {
             wordCounts[word] = 1;
         } else {
