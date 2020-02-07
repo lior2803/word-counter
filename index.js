@@ -1,48 +1,69 @@
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
+const wordCounter = require('./wordCounter');
 const request = require('request');
-//request('https://www.w3.org/TR/PNG/iso_8859-1.txt').pipe(fs.createWriteStream('fromURL.txt'));
-
-///
 const fs = require('fs');
-const es = require('event-stream');
 
-let wordCounts = {};
+const app = express();
+app.use( bodyParser.json() );
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
-let countWordsInString = (str) => {
-    let wordsArr = str.toLowerCase().trim().split(/\s+/);
-    wordsArr.forEach((word) => {
-        if (!wordCounts[word]) {
-            wordCounts[word] = 1;
-        } else {
-            wordCounts[word]++;
-        }
-    });
-};
+app.post('/words/count', (req, res) => {
+    let input = req.body.input;
+    let type = req.body.type;
+    let path = "";
+    let str = "";
+    switch(type.toLowerCase()) {
+      case "file":
+        path = input;
+        wordCounter.countWordsInFile(str, path, (err) => {
+                          if (err){
+                              res.status(500).send("Error message: " + err);
+                          } else {
+                  //        res.json({"wordCounts": wordCounts});
+                              res.sendStatus(200);
+                          }
+                      });
+        break;
+      case "url":
+        path = './testFiles/fromURL.txt';
+        let ws = request(input).pipe(fs.createWriteStream(path));
+        ws.on('finish', function(){
+              wordCounter.countWordsInFile(str, path, (err) => {
+                  if (err){
+                      res.status(500).send("Error message: " + err);
+                  } else {
+                      res.sendStatus(200);
+                  }
+              });
+        });
+        break;
+      case "string":
+        str = input;
+        break;
+      default:
+        res.status(400).send({error: "Unsupported type of input: " + type});
+    }
 
-let countWordsInFile = (path, callback) => {
-    fs.createReadStream(path)
-    .pipe(es.split())
-    .pipe(es.mapSync(function(line) {
-           countWordsInString(line);
-        })
-        .on('error', function(err) {
-            callback(err);
-        })
-        .on('end', function() {
-            callback();
-        }),
-    );
-};
+//    wordCounter.countWordsInFile(str, path, (err) => {
+//        if (err){
+//            res.status(500).send({error: err});
+//        }
+////        res.json({"wordCounts": wordCounts});
+//            res.sendStatus(200);
+//    });
+});
 
-app.get('/', (req, res) => {
-    countWordsInFile('./testFiles/s1.txt', (err) => {
-        if (err){
-            res.status(500).send({error: err});
-        }
-        res.json({"wordCounts": wordCounts});
-        //            res.sendStatus(200);
-    });
+app.get('/words/stats/:word', (req, res) => {
+    let response = {};
+
+    let word = req.params.word.toLowerCase();
+    let count = wordCounter.getStats(word);
+    response[word] = count;
+
+    res.status(200).send(response);
 });
 
 //app.get('/', (req, res) => {
