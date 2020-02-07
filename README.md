@@ -61,3 +61,9 @@ Receives a word and returns the number of times the word appeared so far (in all
         }
         ```
     - 500 Internal server error - in case of an error
+    
+## Instructions
+** Assuming npm is installed.
+
+1. Clone or download the [word-counter](https://github.com/lior2803/word-counter) repository.
+2. From the project root folder run `npm install` and then `npm start`.
