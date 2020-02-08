@@ -18,7 +18,7 @@ The words count is case insensitive, dashes and commas are part of the word and 
 The words are seperated by EOL, tab and spaces.
 
 * Method: POST
-* Path: http://localhost:3000/words/count
+* Path: http://[HOST]:3000/words/count
 * Body: A JSON with an input and a type.  
 The endpoint accepts the input in 3 ways:
     - A string:
@@ -51,7 +51,7 @@ The endpoint accepts the input in 3 ways:
 Receives a word and returns the number of times the word appeared so far (in all previous calls).
 
 * Method: GET
-* Path: http://localhost:3000/words/stats/[WORD]
+* Path: http://[HOST]:3000/words/stats/[WORD]
 * Path parameter: The word 
 * Response:
     - 200 OK - A JSON with the number of appearances (in case the word doesn't appear 0 will be returned)
